@@ -1,2 +1,15 @@
 @use '../abstracts' as *;
 
+.container {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  z-index: 100;
+}
+
+.container-sm {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 3rem;
+  z-index: 100;
+}

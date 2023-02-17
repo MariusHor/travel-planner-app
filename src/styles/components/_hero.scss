@@ -1,0 +1,35 @@
+@use '../abstracts' as *;
+
+.hero-section {
+  display: grid;
+  background-image: linear-gradient(to bottom right, rgba(23, 46, 66, 0.6), rgba(0, 162, 255, 0)),
+    url(/src/assets/hero-bckg.png);
+  background-size: cover;
+  background-position: center top;
+  height: 100vh;
+}
+
+.hero {
+  padding-left: 50px;
+
+  &__form {
+    border-top-left-radius: 0 !important;
+    background: white;
+    border-radius: 10px;
+    max-width: fit-content;
+    padding: 1.5rem;
+  }
+
+  &__header {
+    margin: 0;
+  }
+  &__form-options {
+    display: flex;
+    gap: 20px;
+    padding: 1.2rem;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    background: white;
+    width: fit-content;
+  }
+}

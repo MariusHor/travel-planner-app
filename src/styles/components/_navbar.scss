@@ -1,0 +1,33 @@
+@use '../abstracts' as *;
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-height: 70px;
+
+  &__logo {
+    max-width: 180px;
+  }
+
+  &__saved-trips-link {
+    position: relative;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    height: fit-content;
+
+    &:hover {
+      color: white;
+    }
+
+    i {
+      margin-right: 5px;
+      font-size: 24px;
+      transition: 0.3s ease-in-out;
+      &:hover {
+        color: red;
+      }
+    }
+  }
+}
