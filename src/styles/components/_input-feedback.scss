@@ -1,0 +1,22 @@
+@use '../abstracts' as *;
+
+.input-feedback {
+  display: block !important;
+  visibility: hidden;
+  opacity: 0;
+  margin: 0;
+  transition: opacity 0.3s ease-in-out;
+
+  &--positive {
+    color: rgb(0, 190, 0);
+  }
+
+  &--negative {
+    color: red;
+  }
+}
+
+.show {
+  visibility: visible;
+  opacity: 1;
+}

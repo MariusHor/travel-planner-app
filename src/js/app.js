@@ -1,6 +1,7 @@
 import Map from './modules/map';
 import Geolocation from './modules/Gelocation';
 import PermissionError from './modules/customErrors.js/PermissionError';
+import UsernameValidationError from './modules/customErrors.js/UsernameValidationError';
 
 export default class App {
   #userPosition;
@@ -8,16 +9,26 @@ export default class App {
   constructor(map) {
     this.map = map;
     this.geolocation = new Geolocation();
+
     this.parentEl = document.querySelector('#root');
-    this.userPositionBtn = document.querySelector('.form__get-position');
-    this.positionErrorEl = document.querySelector('.invalid-feedback');
+    this.formEl = document.querySelector('.form');
+    this.mapEl = document.querySelector('#map');
+    this.mapSectionTitleEl = document.querySelector('.map-wrapper__title');
+    this.userNameInputEl = document.querySelector('#user-name');
+    this.userPositionBtnEl = document.querySelector('.form__get-position');
+    this.feedbackEl = document.querySelector('.input-feedback');
   }
 
   handleGetUserPosition() {
-    this.userPositionBtn.addEventListener('click', async () => {
+    this.userPositionBtnEl.addEventListener('click', async () => {
       try {
+        clearTimeout(this.timeout);
+
         await this.geolocation.checkGelocationPermission();
+
         this.#userPosition = await Geolocation.getUserPosition();
+        const positionData = await App.getPositionData(this.#userPosition);
+        this.#renderPositionPositiveFeedback(positionData);
       } catch (error) {
         this.#handleErrors(error);
       } finally {
@@ -27,37 +38,94 @@ export default class App {
   }
 
   #handleErrors(error) {
+    if (error instanceof UsernameValidationError) {
+      this.#renderInvalidUsernameFeedback();
+    }
+
     if (error instanceof PermissionError) {
-      this.#renderPositionNotAllowed({
+      this.#renderPositionNegativeFeedback({
         type: 'Permission',
       });
     }
 
     if (error.message === 'User denied Geolocation') {
-      this.#renderPositionNotAllowed({
+      this.#renderPositionNegativeFeedback({
         type: 'Geolocation',
       });
     }
   }
 
-  #renderPositionNotAllowed(error) {
-    if (error.type === 'Permission') {
-      this.positionErrorEl.textContent =
-        'Geolocation is blocked. Try changing your browser settings.';
-    }
-    if (error.type === 'Geolocation') {
-      this.positionErrorEl.textContent = 'Geolocation was denied by the user';
-    }
+  #toggleShowClass(secondaryClass) {
+    this.feedbackEl.classList.remove('input-feedback--positive', 'input-feedback--negative');
+    this.feedbackEl.classList.add('show', secondaryClass);
 
-    this.positionErrorEl.classList.add('show');
-    setTimeout(() => {
-      this.positionErrorEl.classList.remove('show');
-    }, 3000);
+    this.timeout = setTimeout(() => {
+      this.feedbackEl.classList.remove('show', secondaryClass);
+    }, 5000);
+  }
+
+  #renderPositionPositiveFeedback(positionData) {
+    const { city, locality, countryName: country } = positionData;
+    this.feedbackEl.textContent = `Current position was set as ${city || locality}, ${country}`;
+
+    this.#toggleShowClass('input-feedback--positive');
+  }
+
+  #renderPositionNegativeFeedback(error) {
+    if (error.type === 'Permission')
+      this.feedbackEl.textContent = 'Geolocation is blocked. Try changing your browser settings.';
+    if (error.type === 'Geolocation')
+      this.feedbackEl.textContent = 'Geolocation was denied by the user';
+
+    this.#toggleShowClass('input-feedback--negative');
+  }
+
+  #renderInvalidUsernameFeedback() {
+    this.feedbackEl.textContent = 'Username cannot be empty';
+    this.#toggleShowClass('input-feedback--negative');
+  }
+
+  #renderUserNameOnPage() {
+    const userName = this.userNameInputEl.value;
+    this.userNameInputEl.value = '';
+
+    if (!userName) throw new UsernameValidationError();
+
+    this.mapSectionTitleEl.textContent = `
+    ${userName}, click on the map and create your dream vacation
+    `;
+  }
+
+  static async getPositionData(userPosition) {
+    const { latitude, longitude } = userPosition.coords;
+
+    const response = await fetch(
+      `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`,
+    );
+    const positionData = await response.json();
+    return positionData;
+  }
+
+  handleFormSubmit() {
+    this.formEl.addEventListener('submit', event => {
+      event.preventDefault();
+
+      clearTimeout(this.timeout);
+
+      try {
+        this.#renderUserNameOnPage();
+        this.mapEl.scrollIntoView();
+      } catch (error) {
+        this.#handleErrors(error);
+      }
+    });
   }
 
   init() {
+    this.userNameInputEl.focus();
     this.map.loadMap(this.#userPosition);
     this.handleGetUserPosition();
+    this.handleFormSubmit();
   }
 }
 

@@ -27,16 +27,3 @@ body {
 //   z-index: 1;
 //   background: rgba(0, 0, 0, 0.5);
 // }
-
-.invalid-feedback {
-  display: block !important;
-  visibility: hidden;
-  opacity: 0;
-  margin: 0;
-  transition: 0.3s ease-in-out;
-}
-
-.show {
-  visibility: visible;
-  opacity: 1;
-}
