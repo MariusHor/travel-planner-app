@@ -1,5 +1,7 @@
 {
-  "rules": {},
+  "rules": {
+    "no-useless-catch": 0
+  },
   "env": {
     "es6": true,
     "browser": true

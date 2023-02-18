@@ -1,8 +1,8 @@
 @use '../abstracts' as *;
 
-.hero-section {
+.header {
   display: grid;
-  background-image: linear-gradient(to bottom right, rgba(23, 46, 66, 0.6), rgba(0, 162, 255, 0)),
+  background-image: linear-gradient(to bottom right, rgba(23, 46, 66, 0.4), rgba(0, 162, 255, 0)),
     url(/src/assets/hero-bckg.png);
   background-size: cover;
   background-position: center top;
@@ -18,10 +18,12 @@
     border-radius: 10px;
     max-width: fit-content;
     padding: 1.5rem;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   }
 
   &__header {
     margin: 0;
+    font-weight: 900;
   }
   &__form-options {
     display: flex;

@@ -1,5 +1,4 @@
 @use '../abstracts' as *;
-@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&display=swap');
 
 .sr-only {
   border: 0 !important;
@@ -19,12 +18,22 @@ body {
   height: 100%;
 }
 
-.overlay {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  top: 0;
-  z-index: 1;
-  background: rgba(0, 0, 0, 0.5);
+// .overlay {
+//   position: fixed;
+//   left: 0;
+//   right: 0;
+//   bottom: 0;
+//   top: 0;
+//   z-index: 1;
+//   background: rgba(0, 0, 0, 0.5);
+// }
+
+.invalid-feedback {
+  display: block !important;
+  visibility: hidden;
+  margin: 0;
+}
+
+.show {
+  visibility: visible;
 }

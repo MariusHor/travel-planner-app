@@ -22,6 +22,7 @@
     "@babel/preset-env": "^7.20.2",
     "autoprefixer": "^10.4.13",
     "babel-loader": "^9.1.0",
+    "bootstrap": "^5.2.3",
     "css-loader": "^6.7.2",
     "css-minimizer-webpack-plugin": "^4.2.2",
     "eslint": "^8.28.0",
@@ -48,6 +49,9 @@
     "webpack-dev-server": "^4.11.1"
   },
   "dependencies": {
-    "image-webpack-loader": "^8.1.0"
+    "image-webpack-loader": "^8.1.0",
+    "leaflet": "^1.9.3",
+    "leaflet-control-geocoder": "^2.4.0",
+    "leaflet.markercluster": "^1.5.3"
   }
 }
