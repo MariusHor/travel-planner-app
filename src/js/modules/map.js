@@ -17,13 +17,7 @@ export default class Map {
 
   #homeMarker;
 
-  #mapZoomLevel = 4;
-
-  static getUserPosition() {
-    return new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(resolve, reject);
-    });
-  }
+  #mapZoomLevel = 1;
 
   #createMap(coords = [50, 20]) {
     const bounds = new L.LatLngBounds(new L.LatLng(-70, -180), new L.LatLng(80, 190));
