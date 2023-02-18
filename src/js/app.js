@@ -1,7 +1,7 @@
-import Map from './modules/map';
+import Map from './modules/Map';
 import Geolocation from './modules/Gelocation';
-import PermissionError from './modules/customErrors.js/PermissionError';
-import UsernameValidationError from './modules/customErrors.js/UsernameValidationError';
+import { PermissionError, UsernameValidationError } from './modules/customErrors.js';
+import { capitalize, focusElement, removeElClasses } from './modules/utils/helpers';
 
 export default class App {
   #userPosition;
@@ -19,10 +19,10 @@ export default class App {
     this.feedbackEl = document.querySelector('.input-feedback');
   }
 
-  handleGetUserPosition() {
+  #handleGetUserPosition() {
     this.userPositionBtnEl.addEventListener('click', async () => {
       try {
-        clearTimeout(this.timeout);
+        clearTimeout(this.feedbackElTimeout);
 
         await this.geolocation.checkGelocationPermission();
 
@@ -56,10 +56,12 @@ export default class App {
   }
 
   #toggleShowClass(secondaryClass) {
-    this.feedbackEl.classList.remove('input-feedback--positive', 'input-feedback--negative');
+    removeElClasses(this.feedbackEl, {
+      classes: ['input-feedback--positive', 'input-feedback--negative'],
+    });
     this.feedbackEl.classList.add('show', secondaryClass);
 
-    this.timeout = setTimeout(() => {
+    this.feedbackElTimeout = setTimeout(() => {
       this.feedbackEl.classList.remove('show', secondaryClass);
     }, 5000);
   }
@@ -86,10 +88,10 @@ export default class App {
   }
 
   #renderUserNameOnPage() {
-    const userName = this.userNameInputEl.value;
-    this.userNameInputEl.value = '';
+    if (!this.userNameInputEl.value) throw new UsernameValidationError();
 
-    if (!userName) throw new UsernameValidationError();
+    const userName = capitalize(this.userNameInputEl.value);
+    this.userNameInputEl.value = '';
 
     this.mapSectionTitleEl.textContent = `
     ${userName}, click on the map and create your dream vacation
@@ -106,11 +108,15 @@ export default class App {
     return positionData;
   }
 
-  handleFormSubmit() {
+  #handleFormSubmit() {
     this.formEl.addEventListener('submit', event => {
       event.preventDefault();
 
-      clearTimeout(this.timeout);
+      removeElClasses(this.feedbackEl, {
+        classes: ['show', 'input-feedback--positive', 'input-feedback--negative'],
+      });
+
+      clearTimeout(this.feedbackElTimeout);
 
       try {
         this.#renderUserNameOnPage();
@@ -122,10 +128,10 @@ export default class App {
   }
 
   init() {
-    this.userNameInputEl.focus();
+    focusElement(this.userNameInputEl);
     this.map.loadMap(this.#userPosition);
-    this.handleGetUserPosition();
-    this.handleFormSubmit();
+    this.#handleGetUserPosition();
+    this.#handleFormSubmit();
   }
 }
 
